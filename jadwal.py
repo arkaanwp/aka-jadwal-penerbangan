@@ -49,43 +49,46 @@ def insertion_sort_iterative(arr):
     # Convert back to HH:MM format
     return [minutes_to_time(t) for t in times]
 
-# Insertion Sort - Recursive (Pure Recursive)
+# Insertion Sort - Recursive (More Naive/Inefficient Version)
 def insertion_sort_recursive(arr, n=None):
     if n is None:
         # Initial call: convert to minutes
         times = [time_to_minutes(t) for t in arr]
-        result = insertion_sort_recursive_helper(times, len(times))
+        result = insertion_sort_recursive_helper(times[:])  # Create copy
         return [minutes_to_time(t) for t in result]
 
-def insertion_sort_recursive_helper(arr, n):
+def insertion_sort_recursive_helper(arr):
+    """Pure recursive helper with more overhead - creates new arrays"""
     # Base case: array with 0 or 1 element is already sorted
-    if n <= 1:
+    if len(arr) <= 1:
         return arr
     
-    # Recursively sort first n-1 elements
-    insertion_sort_recursive_helper(arr, n - 1)
+    # Recursively sort all elements except the last one
+    # This creates a NEW array each time (more overhead)
+    sorted_subarray = insertion_sort_recursive_helper(arr[:-1])
     
-    # Insert nth element using recursive insertion
-    last = arr[n - 1]
-    insert_recursive(arr, n - 2, last, n - 1)
+    # Insert the last element into the sorted subarray
+    last_element = arr[-1]
+    result = insert_into_sorted_recursive(sorted_subarray, last_element)
     
-    return arr
+    return result
 
-def insert_recursive(arr, j, key, pos):
-    """Recursive function to insert key at correct position"""
-    # Base case: reached beginning
-    if j < 0:
-        arr[0] = key
-        return
+def insert_into_sorted_recursive(sorted_arr, element):
+    """
+    Recursively insert element into sorted array
+    Creates new arrays at each step for maximum overhead
+    """
+    # Base case: empty array
+    if len(sorted_arr) == 0:
+        return [element]
     
-    # Base case: found correct position
-    if arr[j] <= key:
-        arr[j + 1] = key
-        return
+    # Base case: element should be inserted at the beginning
+    if element < sorted_arr[0]:
+        return [element] + sorted_arr
     
-    # Shift element and recursively insert
-    arr[j + 1] = arr[j]
-    insert_recursive(arr, j - 1, key, j)
+    # Recursive case: insert into the rest of the array
+    # This creates NEW arrays and list concatenations (inefficient)
+    return [sorted_arr[0]] + insert_into_sorted_recursive(sorted_arr[1:], element)
 
 # Main Analysis
 print("=" * 60)
@@ -95,7 +98,7 @@ print("=" * 60)
 print()
 
 # Load datasets from CSV
-data_sizes = [500, 1500, 3000, 5000]
+data_sizes = [100, 500, 1000, 2000]
 datasets = {}
 
 print("Loading data dari CSV files...")
@@ -209,6 +212,7 @@ print()
 print("KESIMPULAN:")
 print("- Iterative umumnya lebih efisien (overhead function call lebih kecil)")
 print("- Recursive menggunakan call stack, risiko stack overflow pada data besar")
+print("- Recursive versi ini juga membuat array baru setiap rekursi (overhead memori)")
 print("- Untuk production: gunakan Iterative")
 print("-" * 60)
 
