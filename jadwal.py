@@ -1,21 +1,26 @@
-import random
+import csv
 import time
 import sys
 import matplotlib.pyplot as plt
 from prettytable import PrettyTable
+import os
 
 # Increase recursion limit for recursive implementation
-# Default is ~1000, we need more for large datasets
 sys.setrecursionlimit(10000)
 
-def generate_flight_schedule(n):
-    """Generate random flight times in HH:MM format"""
+def load_flight_data_from_csv(filename):
+    """Load flight schedule data from CSV file"""
     flights = []
-    for _ in range(n):
-        hour = random.randint(0, 23)
-        minute = random.randint(0, 59)
-        flights.append(f"{hour:02d}:{minute:02d}")
-    return flights
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                flights.append(row['flight_time'])
+        return flights
+    except FileNotFoundError:
+        print(f"Error: File {filename} tidak ditemukan!")
+        print("Silakan jalankan file generator terlebih dahulu.")
+        sys.exit(1)
 
 def time_to_minutes(time_str):
     """Convert HH:MM to minutes for comparison"""
@@ -82,14 +87,25 @@ def insert_recursive(arr, j, key, pos):
     arr[j + 1] = arr[j]
     insert_recursive(arr, j - 1, key, j)
 
-# Generate datasets
-data_sizes = [100, 500, 1000, 2000]
-datasets = {size: generate_flight_schedule(size) for size in data_sizes}
-
+# Main Analysis
 print("=" * 60)
 print("ANALISIS PERBANDINGAN INSERTION SORT")
 print("Iterative vs Recursive pada Jadwal Penerbangan")
 print("=" * 60)
+print()
+
+# Load datasets from CSV
+data_sizes = [100, 500, 1000, 2000]
+datasets = {}
+
+print("Loading data dari CSV files...")
+print()
+
+for size in data_sizes:
+    filename = f"flight_data/flight_schedule_{size}.csv"
+    datasets[size] = load_flight_data_from_csv(filename)
+    print(f"✓ Loaded {size} data dari {filename}")
+
 print()
 
 # Display sample data
@@ -173,6 +189,7 @@ plt.ioff()  # Turn off interactive mode
 print("="*60)
 
 # Analysis
+print()
 print("ANALISIS:")
 print("-" * 60)
 avg_iter = sum(iterative_times) / len(iterative_times)
