@@ -1,7 +1,12 @@
 import random
 import time
+import sys
 import matplotlib.pyplot as plt
 from prettytable import PrettyTable
+
+# Increase recursion limit for recursive implementation
+# Default is ~1000, we need more for large datasets
+sys.setrecursionlimit(10000)
 
 def generate_flight_schedule(n):
     """Generate random flight times in HH:MM format"""
@@ -98,9 +103,6 @@ print()
 iterative_times = []
 recursive_times = []
 
-table = PrettyTable()
-table.field_names = ["Jumlah Data", "Iterative (s)", "Recursive (s)", "Selisih (s)"]
-
 print("Mengukur waktu eksekusi...")
 print()
 
@@ -121,15 +123,23 @@ for size in data_sizes:
     
     diff = abs(rec_time - iter_time)
     
-    table.add_row([
-        size,
-        f"{iter_time:.6f}",
-        f"{rec_time:.6f}",
-        f"{diff:.6f}"
-    ])
-
-print(table)
-print()
+    # Create new table for each iteration
+    table = PrettyTable()
+    table.field_names = ["Jumlah Data", "Iterative (s)", "Recursive (s)", "Selisih (s)"]
+    
+    # Add all results up to current iteration
+    for i in range(len(iterative_times)):
+        table.add_row([
+            data_sizes[i],
+            f"{iterative_times[i]:.6f}",
+            f"{recursive_times[i]:.6f}",
+            f"{abs(recursive_times[i] - iterative_times[i]):.6f}"
+        ])
+    
+    # Print table after each benchmark
+    print(table)
+    print()
+    time.sleep(0.5)  # Small delay for readability
 
 # Analysis
 print("ANALISIS:")
