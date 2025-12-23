@@ -101,13 +101,13 @@ print()
 data_sizes = [100, 500, 1000, 2000]
 datasets = {}
 
-print("Loading data dari CSV files...")
+print("Ambil Data dari CSV")
 print()
 
 for size in data_sizes:
     filename = f"flight_data/flight_schedule_{size}.csv"
     datasets[size] = load_flight_data_from_csv(filename)
-    print(f"✓ Loaded {size} data dari {filename}")
+    print(f"Mengambil {size} data dari {filename}")
 
 print()
 
@@ -122,7 +122,6 @@ print()
 iterative_times = []
 recursive_times = []
 
-print("Mengukur waktu eksekusi...")
 print()
 
 # Setup figure for progressive plotting
@@ -218,3 +217,4 @@ print("-" * 60)
 
 # Keep the final plot displayed
 plt.show()
+
