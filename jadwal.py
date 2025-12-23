@@ -99,14 +99,18 @@ print(f"Sebelum sort: {sample}")
 print(f"Setelah sort:  {insertion_sort_iterative(sample.copy())}")
 print()
 
-# Benchmarking
+# Benchmarking with progressive visualization
 iterative_times = []
 recursive_times = []
 
 print("Mengukur waktu eksekusi...")
 print()
 
-for size in data_sizes:
+# Setup figure for progressive plotting
+plt.figure(figsize=(10, 6))
+plt.ion()  # Turn on interactive mode
+
+for idx, size in enumerate(data_sizes, 1):
     data = datasets[size]
     
     # Iterative
@@ -137,9 +141,36 @@ for size in data_sizes:
         ])
     
     # Print table after each benchmark
+    print(f"=== Hasil Benchmark {idx}/{len(data_sizes)} ===")
     print(table)
     print()
+    
+    # Update plot progressively
+    plt.clf()  # Clear previous plot
+    
+    # Plot data up to current iteration
+    current_sizes = data_sizes[:len(iterative_times)]
+    
+    plt.plot(current_sizes, iterative_times, marker='o', linewidth=2, 
+             markersize=8, label='Iterative', color='#2E86AB')
+    plt.plot(current_sizes, recursive_times, marker='s', linewidth=2, 
+             markersize=8, label='Recursive', color='#A23B72')
+    
+    plt.xlabel("Jumlah Data Jadwal Penerbangan", fontsize=12, fontweight='bold')
+    plt.ylabel("Waktu Eksekusi (detik)", fontsize=12, fontweight='bold')
+    plt.title("Perbandingan Insertion Sort: Iterative vs Recursive\nPada Jadwal Penerbangan", 
+              fontsize=14, fontweight='bold', pad=20)
+    plt.legend(fontsize=11)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    
+    plt.draw()
+    plt.pause(1)  # Pause to show the plot
+    
     time.sleep(0.5)  # Small delay for readability
+
+plt.ioff()  # Turn off interactive mode
+print("="*60)
 
 # Analysis
 print("ANALISIS:")
@@ -164,20 +195,5 @@ print("- Recursive menggunakan call stack, risiko stack overflow pada data besar
 print("- Untuk production: gunakan Iterative")
 print("-" * 60)
 
-# Visualization
-plt.figure(figsize=(10, 6))
-
-plt.plot(data_sizes, iterative_times, marker='o', linewidth=2, 
-         markersize=8, label='Iterative', color='#2E86AB')
-plt.plot(data_sizes, recursive_times, marker='s', linewidth=2, 
-         markersize=8, label='Recursive', color='#A23B72')
-
-plt.xlabel("Jumlah Data Jadwal Penerbangan", fontsize=12, fontweight='bold')
-plt.ylabel("Waktu Eksekusi (detik)", fontsize=12, fontweight='bold')
-plt.title("Perbandingan Insertion Sort: Iterative vs Recursive\nPada Jadwal Penerbangan", 
-          fontsize=14, fontweight='bold', pad=20)
-plt.legend(fontsize=11)
-plt.grid(True, alpha=0.3)
-plt.tight_layout()
-
+# Keep the final plot displayed
 plt.show()
