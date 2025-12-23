@@ -95,7 +95,7 @@ print("=" * 60)
 print()
 
 # Load datasets from CSV
-data_sizes = [100, 500, 1000, 2000]
+data_sizes = [500, 1500, 3000, 5000]
 datasets = {}
 
 print("Loading data dari CSV files...")
@@ -110,7 +110,7 @@ print()
 
 # Display sample data
 print("Contoh Data Jadwal Penerbangan (5 data pertama):")
-sample = datasets[100][:5]
+sample = datasets[500][:5]
 print(f"Sebelum sort: {sample}")
 print(f"Setelah sort:  {insertion_sort_iterative(sample.copy())}")
 print()
