@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from prettytable import PrettyTable
 import os
 
-# Increase recursion limit for recursive implementation
 sys.setrecursionlimit(10000)
 
 def load_flight_data_from_csv(filename):
@@ -33,7 +32,6 @@ def minutes_to_time(minutes):
     minute = minutes % 60
     return f"{hour:02d}:{minute:02d}"
 
-# Insertion Sort - Iterative
 def insertion_sort_iterative(arr):
     # Convert to minutes for sorting
     times = [time_to_minutes(t) for t in arr]
@@ -45,11 +43,9 @@ def insertion_sort_iterative(arr):
             times[j + 1] = times[j]
             j -= 1
         times[j + 1] = key
-    
-    # Convert back to HH:MM format
+
     return [minutes_to_time(t) for t in times]
 
-# Insertion Sort - Recursive (More Naive/Inefficient Version)
 def insertion_sort_recursive(arr, n=None):
     if n is None:
         # Initial call: convert to minutes
@@ -59,15 +55,10 @@ def insertion_sort_recursive(arr, n=None):
 
 def insertion_sort_recursive_helper(arr):
     """Pure recursive helper with more overhead - creates new arrays"""
-    # Base case: array with 0 or 1 element is already sorted
     if len(arr) <= 1:
         return arr
-    
-    # Recursively sort all elements except the last one
-    # This creates a NEW array each time (more overhead)
     sorted_subarray = insertion_sort_recursive_helper(arr[:-1])
     
-    # Insert the last element into the sorted subarray
     last_element = arr[-1]
     result = insert_into_sorted_recursive(sorted_subarray, last_element)
     
@@ -78,26 +69,20 @@ def insert_into_sorted_recursive(sorted_arr, element):
     Recursively insert element into sorted array
     Creates new arrays at each step for maximum overhead
     """
-    # Base case: empty array
     if len(sorted_arr) == 0:
         return [element]
     
-    # Base case: element should be inserted at the beginning
     if element < sorted_arr[0]:
         return [element] + sorted_arr
     
-    # Recursive case: insert into the rest of the array
-    # This creates NEW arrays and list concatenations (inefficient)
     return [sorted_arr[0]] + insert_into_sorted_recursive(sorted_arr[1:], element)
 
-# Main Analysis
 print("=" * 60)
 print("ANALISIS PERBANDINGAN INSERTION SORT")
 print("Iterative vs Recursive pada Jadwal Penerbangan")
 print("=" * 60)
 print()
 
-# Load datasets from CSV
 data_sizes = [100, 500, 1000, 2000]
 datasets = {}
 
@@ -111,33 +96,28 @@ for size in data_sizes:
 
 print()
 
-# Display sample data
 print("Contoh Data Jadwal Penerbangan (5 data pertama):")
 sample = datasets[500][:5]
 print(f"Sebelum sort: {sample}")
 print(f"Setelah sort:  {insertion_sort_iterative(sample.copy())}")
 print()
 
-# Benchmarking with progressive visualization
 iterative_times = []
 recursive_times = []
 
 print()
 
-# Setup figure for progressive plotting
 plt.figure(figsize=(10, 6))
-plt.ion()  # Turn on interactive mode
+plt.ion()
 
 for idx, size in enumerate(data_sizes, 1):
     data = datasets[size]
     
-    # Iterative
     start = time.time()
     insertion_sort_iterative(data.copy())
     iter_time = time.time() - start
     iterative_times.append(iter_time)
     
-    # Recursive
     start = time.time()
     insertion_sort_recursive(data.copy())
     rec_time = time.time() - start
@@ -145,11 +125,9 @@ for idx, size in enumerate(data_sizes, 1):
     
     diff = abs(rec_time - iter_time)
     
-    # Create new table for each iteration
     table = PrettyTable()
     table.field_names = ["Jumlah Data", "Iterative (s)", "Recursive (s)", "Selisih (s)"]
     
-    # Add all results up to current iteration
     for i in range(len(iterative_times)):
         table.add_row([
             data_sizes[i],
@@ -158,15 +136,12 @@ for idx, size in enumerate(data_sizes, 1):
             f"{abs(recursive_times[i] - iterative_times[i]):.6f}"
         ])
     
-    # Print table after each benchmark
     print(f"=== Hasil Benchmark {idx}/{len(data_sizes)} ===")
     print(table)
     print()
+
+    plt.clf()
     
-    # Update plot progressively
-    plt.clf()  # Clear previous plot
-    
-    # Plot data up to current iteration
     current_sizes = data_sizes[:len(iterative_times)]
     
     plt.plot(current_sizes, iterative_times, marker='o', linewidth=2, 
@@ -183,14 +158,13 @@ for idx, size in enumerate(data_sizes, 1):
     plt.tight_layout()
     
     plt.draw()
-    plt.pause(1)  # Pause to show the plot
+    plt.pause(1)
     
-    time.sleep(0.5)  # Small delay for readability
+    time.sleep(0.5)
 
-plt.ioff()  # Turn off interactive mode
+plt.ioff()
 print("="*60)
 
-# Analysis
 print()
 print("ANALISIS:")
 print("-" * 60)
@@ -215,6 +189,6 @@ print("- Recursive versi ini juga membuat array baru setiap rekursi (overhead me
 print("- Untuk production: gunakan Iterative")
 print("-" * 60)
 
-# Keep the final plot displayed
 plt.show()
+
 
