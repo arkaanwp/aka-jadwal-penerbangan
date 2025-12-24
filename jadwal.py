@@ -18,7 +18,6 @@ def load_flight_data_from_csv(filename):
         return flights
     except FileNotFoundError:
         print(f"Error: File {filename} tidak ditemukan!")
-        print("Silakan jalankan file generator terlebih dahulu.")
         sys.exit(1)
 
 def time_to_minutes(time_str):
@@ -190,5 +189,6 @@ print("- Untuk production: gunakan Iterative")
 print("-" * 60)
 
 plt.show()
+
 
 
