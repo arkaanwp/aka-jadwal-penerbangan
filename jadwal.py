@@ -32,7 +32,6 @@ def minutes_to_time(minutes):
     return f"{hour:02d}:{minute:02d}"
 
 def insertion_sort_iterative(arr):
-    # Convert to minutes for sorting
     times = [time_to_minutes(t) for t in arr]
     
     for i in range(1, len(times)):
@@ -47,9 +46,8 @@ def insertion_sort_iterative(arr):
 
 def insertion_sort_recursive(arr, n=None):
     if n is None:
-        # Initial call: convert to minutes
         times = [time_to_minutes(t) for t in arr]
-        result = insertion_sort_recursive_helper(times[:])  # Create copy
+        result = insertion_sort_recursive_helper(times[:])
         return [minutes_to_time(t) for t in result]
 
 def insertion_sort_recursive_helper(arr):
@@ -189,6 +187,7 @@ print("- Untuk production: gunakan Iterative")
 print("-" * 60)
 
 plt.show()
+
 
 
 
